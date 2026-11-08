@@ -1,0 +1,46 @@
+name: Approve phone
+run-name: ${{ inputs.action }} phone
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Approve or remove"
+        type: choice
+        options: [approve, remove]
+        default: approve
+      code:
+        description: "Device code from the phone, e.g. K7QM-29XD"
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-release
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.actor == github.repository_owner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - id: run
+        env:
+          ACTION: ${{ inputs.action }}
+          CODE: ${{ inputs.code }}
+          SIGNING_KEY: ${{ secrets.DATA_SIGNING_KEY }}
+        run: node scripts/approve.mjs
+      - name: Publish
+        if: steps.run.outputs.msg != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json data.json.sig devices.json
+          git commit -m "${{ steps.run.outputs.msg }}"
+          git push

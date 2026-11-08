@@ -1,5 +1,7 @@
-# TDS/TCS Reckoner data
+# IT Rates data
 
-Rates, due dates, forms and payment codes used by the TDS/TCS Reckoner app, Tax Year 2026-27.
+Data for the IT Rates app (JAKS staff), Tax Year 2026-27. The app accepts `data.json` only with a valid signature in `data.json.sig`. Quick reference only; check the Act and Rules for a specific transaction.
 
-The app accepts `data.json` only with a valid signature in `data.json.sig`. Quick reference only; check the Act and Rules for a specific transaction.
+## Approving a phone
+Actions → **Approve phone** → Run workflow → choose approve or remove, paste the device code shown on the phone's lock screen → Run.
+`devices.json` is the master list of approved codes; local publishing keeps it.
